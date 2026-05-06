@@ -97,7 +97,7 @@
         <select id="t-unidad" onchange="onUnidadChange()">
           <option value="">- Seleccionar -</option>
           <optgroup label="Tractores"><option>AH710TK</option><option>AG949PU</option><option>AB170TF</option><option>MAT440</option><option>KPB020</option><option>ILC195</option><option>FHQ054</option><option>NBA064</option></optgroup>
-          <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option></optgroup>
+          <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option><option>IQP194</option></optgroup>
           <optgroup label="Otro"><option value="__otro__">Otro...</option></optgroup>
         </select>
         <div id="otro-unidad-box" class="hidden" style="margin-top:6px"><input type="text" id="otro-unidad-txt" placeholder="Ej: Camioneta, Tractor rural, Acoplado..."></div>
@@ -188,7 +188,7 @@
           <select id="hist-unidad-filter" onchange="loadHistorial()">
             <option value="">Todas las unidades</option>
             <optgroup label="Tractores"><option>AH710TK</option><option>AG949PU</option><option>AB170TF</option><option>MAT440</option><option>KPB020</option><option>ILC195</option><option>FHQ054</option><option>NBA064</option></optgroup>
-            <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option></optgroup>
+            <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option><option>IQP194</option></optgroup>
           </select>
           <select id="hist-tipo-filter" onchange="loadHistorial()">
             <option value="">Todos los tipos</option>
@@ -230,7 +230,7 @@
         <select id="exp-unidad">
           <option value="">Todas las unidades</option>
           <optgroup label="Tractores"><option>AH710TK</option><option>AG949PU</option><option>AB170TF</option><option>MAT440</option><option>KPB020</option><option>ILC195</option><option>FHQ054</option><option>NBA064</option></optgroup>
-          <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option></optgroup>
+          <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option><option>IQP194</option></optgroup>
         </select>
         <label>Mes</label>
         <select id="exp-mes"><option value="">Todos los meses</option></select>
@@ -283,7 +283,7 @@ function onUnidadChange(){
 }
 function getUnidadFinal(){const v=document.getElementById("t-unidad").value;if(v==="__otro__")return document.getElementById("otro-unidad-txt").value.trim()||null;return v||null;}
 const TRACTORES=["AH710TK","AG949PU","AB170TF","MAT440","KPB020","ILC195","FHQ054","NBA064"];
-const SEMIS=["AF410OZ","AF505BN","AH139PO","AI080DL","AC877SB","AC007MG","NSN381","AI129JC"];
+const SEMIS=["AF410OZ","AF505BN","AH139PO","AI080DL","AC877SB","AC007MG","NSN381","AI129JC","IQP194"];
 const TRIPLES_S=["AF410OZ","AF505BN","AI129JC"];
 function updateEjes(){
   const u=getUnidadFinal()||"";
