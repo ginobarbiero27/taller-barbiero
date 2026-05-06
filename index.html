@@ -284,7 +284,7 @@ function onUnidadChange(){
 function getUnidadFinal(){const v=document.getElementById("t-unidad").value;if(v==="__otro__")return document.getElementById("otro-unidad-txt").value.trim()||null;return v||null;}
 const TRACTORES=["AH710TK","AG949PU","AB170TF","MAT440","KPB020","ILC195","FHQ054","NBA064"];
 const SEMIS=["AF410OZ","AF505BN","AH139PO","AI080DL","AC877SB","AC007MG","NSN381","AI129JC","IQP194"];
-const TRIPLES_S=["AF410OZ","AF505BN","AI129JC"];
+const TRIPLES_S=["AF410OZ","AF505BN","AI129JC","NSN381"];
 function updateEjes(){
   const u=getUnidadFinal()||"";
   const sel=document.getElementById("cb-eje");
