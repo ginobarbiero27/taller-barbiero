@@ -30,7 +30,6 @@
     .btn-primary{width:100%;padding:13px;background:#1F4E79;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:14px;font-family:inherit}
     .btn-secondary{width:100%;padding:10px;background:white;color:#1F4E79;border:1.5px solid #1F4E79;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit}
     .btn-green{width:100%;padding:10px;background:#375623;color:white;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit}
-    .btn-danger{width:100%;padding:10px;background:white;color:#C00000;border:1.5px solid #C00000;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px;font-family:inherit}
     .badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap;display:inline-block}
     .badge-blue{background:#EBF2FA;color:#1F4E79}.badge-green{background:#EAF3DE;color:#27500A}
     .badge-orange{background:#FCE4D6;color:#C55A11}.badge-red{background:#FCEBEB;color:#7A1A1A}
@@ -64,19 +63,6 @@
     .hist-fecha{font-size:12px;color:#888}
     .filter-row{display:flex;gap:8px;margin-bottom:8px}
     .filter-row select{flex:1}
-    .rot-alerta-box{background:#EBF2FA;border:1.5px solid #1F4E79;border-radius:8px;padding:10px 12px;margin-top:10px;display:none}
-    .rot-alerta-box label{color:#1F4E79;margin-top:0;font-weight:600;font-size:12px}
-    .rot-km-row{display:flex;gap:8px;align-items:center;margin-top:6px}
-    .rot-km-row input{flex:1}
-    .rot-km-row .rot-km-label{font-size:12px;color:#1F4E79;white-space:nowrap;font-weight:500}
-    /* Modal edicion */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:16px}
-    .modal-overlay.open{display:flex}
-    .modal-box{background:white;border-radius:16px;width:100%;max-width:460px;margin:auto;padding:18px;box-shadow:0 8px 32px rgba(0,0,0,.2)}
-    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-    .modal-title{font-size:15px;font-weight:700;color:#1F4E79}
-    .btn-close{background:none;border:none;font-size:22px;cursor:pointer;color:#888;line-height:1}
-    .edit-badge{background:#FFF9C4;border:1px solid #F9A825;color:#7A4A00;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:10px}
   </style>
 </head>
 <body>
@@ -90,101 +76,6 @@
     <button class="btn-primary" onclick="doLogin()" style="margin-top:16px">Ingresar</button>
   </div>
 </div>
-
-<!-- MODAL EDICION -->
-<div class="modal-overlay" id="modal-edicion">
-  <div class="modal-box">
-    <div class="modal-header">
-      <span class="modal-title">&#9998; Editar trabajo</span>
-      <button class="btn-close" onclick="cerrarModal()">&#215;</button>
-    </div>
-    <div class="edit-badge">&#9888; Editando registro existente</div>
-    <input type="hidden" id="edit-id">
-    <label>Unidad</label>
-    <select id="edit-unidad" onchange="editUnidadChange()">
-      <option value="">- Seleccionar -</option>
-      <optgroup label="Tractores"><option>AH710TK</option><option>AG949PU</option><option>AB170TF</option><option>MAT440</option><option>KPB020</option><option>ILC195</option><option>FHQ054</option><option>NBA064</option></optgroup>
-      <optgroup label="Semirremolques"><option>AF410OZ</option><option>AF505BN</option><option>AH139PO</option><option>AI080DL</option><option>AC877SB</option><option>AC007MG</option><option>NSN381</option><option>AI129JC</option><option>IQP194</option></optgroup>
-      <optgroup label="Otro"><option value="__otro_edit__">Otro...</option></optgroup>
-    </select>
-    <div id="edit-otro-box" class="hidden" style="margin-top:6px"><input type="text" id="edit-otro-txt" placeholder="Nombre de la unidad"></div>
-    <label>Km</label><input type="number" id="edit-km" inputmode="numeric">
-    <label>Fecha</label><input type="date" id="edit-fecha">
-    <label>Tipo</label>
-    <select id="edit-tipo" onchange="editTipoChange()">
-      <option value="cubiertas">Cubiertas</option>
-      <option value="service">Service</option>
-      <option value="aceite_caja">Aceite caja/dif.</option>
-      <option value="electrico">Electrico</option>
-      <option value="reparacion">Reparacion</option>
-      <option value="otro">Otro</option>
-    </select>
-
-    <!-- DETALLE CUBIERTAS EDIT -->
-    <div id="edit-mod-cubiertas" class="modulo-box" style="margin-top:10px">
-      <div class="modulo-title">Detalle cubiertas</div>
-      <label style="margin-top:0">Operacion</label>
-      <div class="radio-group">
-        <div class="radio-btn sel-green" id="ecb-coloc" onclick="editSelCubOp('colocacion',this)">Colocacion</div>
-        <div class="radio-btn" id="ecb-rot" onclick="editSelCubOp('rotacion',this)">Rotacion</div>
-        <div class="radio-btn" id="ecb-emp" onclick="editSelCubOp('emparche',this)">Emparche</div>
-      </div>
-      <label>Eje</label><select id="edit-cb-eje" onchange="editUpdatePosiciones()"><option value="">- Seleccionar eje -</option></select>
-      <label>Posicion</label><select id="edit-cb-pos"><option value="">- Seleccionar posicion -</option></select>
-      <label>Marca / modelo</label><input type="text" id="edit-cb-marca" placeholder="Ej: Double Coin, Fate DR-400...">
-      <label>Nro de serie (opcional)</label><input type="text" id="edit-cb-serie">
-      <div class="rot-alerta-box" id="edit-rot-alerta-box">
-        <div style="font-size:12px;font-weight:700;color:#1F4E79;margin-bottom:4px">&#128337; Proxima rotacion</div>
-        <div style="font-size:11px;color:#555;margin-bottom:6px">Cada cuantos km rotar este eje</div>
-        <div class="rot-km-row">
-          <input type="number" id="edit-rot-prox-km" placeholder="Ej: 25000" inputmode="numeric">
-          <span class="rot-km-label">km</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- DETALLE SERVICE EDIT -->
-    <div id="edit-mod-service" class="modulo-box hidden" style="margin-top:10px">
-      <div class="modulo-title">Detalle service</div>
-      <label style="margin-top:0">Filtros cambiados</label>
-      <div class="radio-group" id="edit-filtros-grupo">
-        <div class="radio-btn" onclick="editToggleFiltro(this,'aceite')">Aceite</div>
-        <div class="radio-btn" onclick="editToggleFiltro(this,'combustible')">Combustible</div>
-        <div class="radio-btn" onclick="editToggleFiltro(this,'aire')">Aire</div>
-        <div class="radio-btn" onclick="editToggleFiltro(this,'habitaculo')">Habitaculo</div>
-        <div class="radio-btn" onclick="editToggleFiltro(this,'sep_agua')">Sep. agua</div>
-        <div class="radio-btn" onclick="editToggleFiltro(this,'hidraulico')">Hidraulico</div>
-      </div>
-      <label>Litros de aceite</label><input type="number" id="edit-sv-litros" inputmode="numeric">
-      <label>Tipo de aceite</label><input type="text" id="edit-sv-aceite">
-      <label>Proximo service (km)</label><input type="number" id="edit-sv-proximo" inputmode="numeric">
-    </div>
-
-    <!-- DETALLE ACEITE CAJA EDIT -->
-    <div id="edit-mod-aceite_caja" class="modulo-box hidden" style="margin-top:10px">
-      <div class="modulo-title">Aceite caja / diferencial</div>
-      <label style="margin-top:0">Componente</label>
-      <div class="radio-group">
-        <div class="radio-btn sel-orange" id="eac-caja" onclick="editSelAceite('caja',this)">Caja</div>
-        <div class="radio-btn" id="eac-dif" onclick="editSelAceite('diferencial',this)">Diferencial</div>
-        <div class="radio-btn" id="eac-ambos" onclick="editSelAceite('ambos',this)">Ambos</div>
-      </div>
-      <label>Litros cargados</label><input type="number" id="edit-ac-litros" inputmode="numeric">
-      <label>Tipo de aceite</label><input type="text" id="edit-ac-tipo">
-    </div>
-
-    <label>Descripcion / observaciones</label>
-    <textarea id="edit-desc"></textarea>
-    <label>Repuestos utilizados</label>
-    <div id="edit-repuestos-lista"></div>
-    <button class="btn-icon btn-add" onclick="editAddRepuesto()" style="width:auto;padding:6px 14px;font-size:13px;margin-top:6px">+ Agregar repuesto</button>
-
-    <button class="btn-primary" onclick="guardarEdicion()">Guardar cambios</button>
-    <button class="btn-danger" onclick="eliminarTrabajo()">Eliminar registro</button>
-    <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
-  </div>
-</div>
-
 <div id="main-app" style="display:none">
   <div class="app">
     <div class="header">
@@ -198,7 +89,6 @@
       <button class="tab" onclick="showScreen('stock',this)">&#128230; Stock</button>
       <button class="tab" onclick="showScreen('exportar',this)">&#128229; Exportar</button>
     </div>
-
     <!-- NUEVO -->
     <div id="screen-nuevo" class="screen active">
       <div class="card" id="form-trabajo">
@@ -211,7 +101,7 @@
           <optgroup label="Otro"><option value="__otro__">Otro...</option></optgroup>
         </select>
         <div id="otro-unidad-box" class="hidden" style="margin-top:6px"><input type="text" id="otro-unidad-txt" placeholder="Ej: Camioneta, Tractor rural, Acoplado..."></div>
-        <label>Km actual</label><input type="number" id="t-km" placeholder="Ej: 245830" inputmode="numeric">
+        <label>Km actual <span style='font-size:11px;color:#375623;font-weight:400'>(se carga automatico al seleccionar unidad)</span></label><input type="number" id="t-km" placeholder="Ej: 245830" inputmode="numeric" style="transition:background .3s">
         <label>Fecha</label><input type="date" id="t-fecha">
         <label>Tipo de trabajo</label>
         <div class="radio-group" id="tipo-grupo">
@@ -234,14 +124,6 @@
           <label>Posicion</label><select id="cb-pos"><option value="">- Seleccionar posicion -</option></select>
           <label>Marca / modelo</label><input type="text" id="cb-marca" placeholder="Ej: Double Coin, Fate DR-400...">
           <label>Nro de serie (opcional)</label><input type="text" id="cb-serie" placeholder="Ej: J42142805 AÑO 42/24">
-          <div class="rot-alerta-box" id="rot-alerta-box">
-            <div style="font-size:12px;font-weight:700;color:#1F4E79;margin-bottom:4px">&#128337; Proxima rotacion</div>
-            <div style="font-size:11px;color:#555;margin-bottom:6px">Cada cuantos km rotar este eje por primera vez</div>
-            <div class="rot-km-row">
-              <input type="number" id="rot-prox-km" placeholder="Ej: 25000" inputmode="numeric">
-              <span class="rot-km-label">km</span>
-            </div>
-          </div>
         </div>
         <div id="mod-service" class="modulo-box hidden">
           <div class="modulo-title">Detalle service motor</div>
@@ -294,13 +176,11 @@
         </div>
       </div>
     </div>
-
     <!-- ALERTAS -->
     <div id="screen-alertas" class="screen">
       <div class="card"><p class="section-title">Proximos services</p><div id="alertas-lista"><div class="empty-msg">Cargando...</div></div></div>
-      <div class="card"><p class="section-title">Rotaciones cubiertas</p><div id="rotaciones-lista"><div class="empty-msg">Cargando...</div></div></div>
+      <div class="card"><p class="section-title">Ultimas rotaciones cubiertas</p><div id="rotaciones-lista"><div class="empty-msg">Cargando...</div></div></div>
     </div>
-
     <!-- HISTORIAL -->
     <div id="screen-historial" class="screen">
       <div class="card" style="padding:10px">
@@ -321,7 +201,6 @@
       </div>
       <div id="historial-lista"></div>
     </div>
-
     <!-- STOCK -->
     <div id="screen-stock" class="screen">
       <div class="card">
@@ -343,7 +222,6 @@
         <div id="stock-lista"><div class="empty-msg">Cargando...</div></div>
       </div>
     </div>
-
     <!-- EXPORTAR -->
     <div id="screen-exportar" class="screen">
       <div class="card">
@@ -361,7 +239,6 @@
     </div>
   </div>
 </div>
-
 <div class="loading-overlay" id="loading" style="display:none"><div class="spinner"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -371,17 +248,16 @@ const SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 let currentUser=null,tipoTrabajo="cubiertas",cubOp="colocacion",aceiteComp="caja",stockUnid="u.";
 let repCount=1,filtrosSeleccionados=new Set(),fotoBase64=null;
-let editCubOp="colocacion",editAceiteComp="caja",editFiltros=new Set(),editRepCount=0;
 const hoy=new Date().toISOString().split("T")[0];
 document.getElementById("t-fecha").value=hoy;
 document.getElementById("header-fecha").textContent=new Date().toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long"});
-
 function showLoading(v){document.getElementById("loading").style.display=v?"flex":"none";}
 function doLogin(){
   const n=document.getElementById("login-nombre").value.trim();
   const a=document.getElementById("login-apellido").value.trim();
   if(!n||!a){alert("Ingresa nombre y apellido");return;}
-  localStorage.setItem("taller_user",n+" "+a);startApp(n+" "+a);
+  localStorage.setItem("taller_user",n+" "+a);
+  startApp(n+" "+a);
 }
 function startApp(u){
   currentUser=u;
@@ -392,7 +268,6 @@ function startApp(u){
 }
 function cambiarUsuario(){if(!confirm("Cambiar usuario?"))return;localStorage.removeItem("taller_user");document.getElementById("main-app").style.display="none";document.getElementById("login-screen").style.display="flex";}
 window.onload=()=>{const s=localStorage.getItem("taller_user");if(s)startApp(s);else updateEjes();};
-
 function showScreen(name,el){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -401,32 +276,44 @@ function showScreen(name,el){
   if(name==="stock")loadStock();
   if(name==="alertas")loadAlertas();
 }
-
 function onUnidadChange(){
   const v=document.getElementById("t-unidad").value;
   document.getElementById("otro-unidad-box").classList.toggle("hidden",v!=="__otro__");
   updateEjes();
+  // Auto-cargar KM desde app de combustible
+  if(v && v!=="__otro__"){
+    autoCargarKM(v);
+  }
+}
+
+async function autoCargarKM(unidad){
+  const kmField = document.getElementById("t-km");
+  kmField.placeholder = "Buscando KM...";
+  const {data} = await sb.from("cargas").select("km").eq("unidad", unidad)
+    .order("km",{ascending:false}).limit(1);
+  if(data && data.length > 0 && data[0].km > 0){
+    kmField.value = data[0].km;
+    kmField.style.background = "#EAF3DE";
+    kmField.title = "KM cargado automaticamente desde app combustible";
+  } else {
+    kmField.value = "";
+    kmField.style.background = "";
+    kmField.placeholder = "Ej: 245830 (no encontrado en app combustible)";
+  }
 }
 function getUnidadFinal(){const v=document.getElementById("t-unidad").value;if(v==="__otro__")return document.getElementById("otro-unidad-txt").value.trim()||null;return v||null;}
 const TRACTORES=["AH710TK","AG949PU","AB170TF","MAT440","KPB020","ILC195","FHQ054","NBA064"];
 const SEMIS=["AF410OZ","AF505BN","AH139PO","AI080DL","AC877SB","AC007MG","NSN381","AI129JC","IQP194"];
-const TRIPLES_S=["AF410OZ","AF505BN","AI129JC","NSN381"];
-
-function getEjesParaUnidad(u){
-  if(TRACTORES.includes(u))return["Direccion","Traccion","3er Eje"];
-  if(SEMIS.includes(u))return TRIPLES_S.includes(u)?["Ultimo Eje","Eje Medio","Levanta Eje"]:["Ultimo Eje","Eje Medio (Levanta Eje)"];
-  return["Eje delantero","Eje trasero","Otro"];
-}
-function getPosicionesParaUnidadEje(u,eje){
-  if(TRACTORES.includes(u)){if(eje==="Direccion")return["Lado Chofer (LC)","Lado Banquina (LB)"];return["LC Adentro (LC AD)","LC Afuera (LC AF)","LB Adentro (LB AD)","LB Afuera (LB AF)"];}
-  return["LC Adentro (LC AD)","LC Afuera (LC AF)","LB Adentro (LB AD)","LB Afuera (LB AF)"];
-}
-
+const TRIPLES_S=["AF410OZ","AF505BN","AI129JC","NSN381","IQP194"];
 function updateEjes(){
   const u=getUnidadFinal()||"";
   const sel=document.getElementById("cb-eje");
   sel.innerHTML="<option value=''>- Seleccionar eje -</option>";
-  getEjesParaUnidad(u).forEach(e=>{const o=document.createElement("option");o.value=e;o.textContent=e;sel.appendChild(o);});
+  let ejes=[];
+  if(TRACTORES.includes(u))ejes=["Direccion","Traccion","3er Eje"];
+  else if(SEMIS.includes(u)){if(TRIPLES_S.includes(u))ejes=["Ultimo Eje","Eje Medio","Levanta Eje"];else ejes=["Ultimo Eje","Eje Medio (Levanta Eje)"];}
+  else ejes=["Eje delantero","Eje trasero","Otro"];
+  ejes.forEach(e=>{const o=document.createElement("option");o.value=e;o.textContent=e;sel.appendChild(o);});
   updatePosiciones();
 }
 function updatePosiciones(){
@@ -434,36 +321,22 @@ function updatePosiciones(){
   const u=getUnidadFinal()||"";
   const sel=document.getElementById("cb-pos");
   sel.innerHTML="<option value=''>- Seleccionar posicion -</option>";
-  getPosicionesParaUnidadEje(u,eje).forEach(p=>{const o=document.createElement("option");o.value=p;o.textContent=p;sel.appendChild(o);});
+  let pos=[];
+  if(TRACTORES.includes(u)){if(eje==="Direccion")pos=["Lado Chofer (LC)","Lado Banquina (LB)"];else pos=["LC Adentro (LC AD)","LC Afuera (LC AF)","LB Adentro (LB AD)","LB Afuera (LB AF)"];}
+  else pos=["LC Adentro (LC AD)","LC Afuera (LC AF)","LB Adentro (LB AD)","LB Afuera (LB AF)"];
+  pos.forEach(p=>{const o=document.createElement("option");o.value=p;o.textContent=p;sel.appendChild(o);});
 }
-
-// Mostrar/ocultar recuadro de proxima rotacion: colocacion Y rotacion
-function updateRotAlertaBox(){
-  const box=document.getElementById("rot-alerta-box");
-  const show=(cubOp==="colocacion"||cubOp==="rotacion");
-  box.style.display=show?"block":"none";
-  const lbl=box.querySelector("div:nth-child(2)");
-  if(lbl)lbl.textContent=cubOp==="colocacion"?"Cada cuantos km hacer la primera rotacion":"Cada cuantos km rotar este eje";
-}
-
 function selTipo(tipo,el){
   tipoTrabajo=tipo;
   document.querySelectorAll("#tipo-grupo .radio-btn").forEach(b=>b.className="radio-btn");el.className="radio-btn sel";
   ["cubiertas","service","aceite_caja"].forEach(m=>document.getElementById("mod-"+m).classList.add("hidden"));
   if(["cubiertas","service","aceite_caja"].includes(tipo))document.getElementById("mod-"+tipo).classList.remove("hidden");
 }
-function selCubOp(op,el){
-  cubOp=op;
-  ["cb-coloc","cb-rot","cb-emp"].forEach(id=>document.getElementById(id).className="radio-btn");
-  el.className="radio-btn sel-green";
-  updateRotAlertaBox();
-  if(op==="emparche")document.getElementById("rot-prox-km").value="";
-}
+function selCubOp(op,el){cubOp=op;["cb-coloc","cb-rot","cb-emp"].forEach(id=>document.getElementById(id).className="radio-btn");el.className="radio-btn sel-green";}
 function selAceite(comp,el){aceiteComp=comp;["ac-caja","ac-dif","ac-ambos"].forEach(id=>document.getElementById(id).className="radio-btn");el.className="radio-btn sel-orange";}
 function toggleFiltro(el,f){if(filtrosSeleccionados.has(f)){filtrosSeleccionados.delete(f);el.className="radio-btn";}else{filtrosSeleccionados.add(f);el.className="radio-btn sel-green";}}
 function selStockUnid(u,el){stockUnid=u;["st-u-u","st-u-l","st-u-k"].forEach(id=>document.getElementById(id).className="radio-btn");el.className="radio-btn sel";}
 function previewFoto(input){const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{fotoBase64=e.target.result;const img=document.getElementById("foto-preview");img.src=fotoBase64;img.style.display="block";};r.readAsDataURL(file);}
-
 function addRepuesto(){
   const n=repCount++;const div=document.createElement("div");div.className="repuesto-row";div.id="rep-row-"+n;
   div.innerHTML="<input type='text' class='codigo' placeholder='Codigo' id='rep-cod-"+n+"'><input type='text' placeholder='Descripcion' id='rep-desc-"+n+"'><input type='number' class='cant' placeholder='Cant.' id='rep-cant-"+n+"' inputmode='numeric'><button class='btn-icon btn-del' onclick='this.parentElement.remove()'>x</button>";
@@ -480,7 +353,6 @@ function getRepuestos(){
   });
   return reps;
 }
-
 async function guardarTrabajo(){
   const unidad=getUnidadFinal();
   const km=parseInt(document.getElementById("t-km").value)||0;
@@ -489,10 +361,7 @@ async function guardarTrabajo(){
   if(!unidad){alert("Selecciona una unidad");return;}
   if(!fecha){alert("Ingresa la fecha");return;}
   let detalle={};
-  if(tipoTrabajo==="cubiertas"){
-    detalle={operacion:cubOp,eje:document.getElementById("cb-eje").value,posicion:document.getElementById("cb-pos").value,marca:document.getElementById("cb-marca").value.trim(),serie:document.getElementById("cb-serie").value.trim()};
-    if(cubOp==="colocacion"||cubOp==="rotacion"){const px=parseInt(document.getElementById("rot-prox-km").value)||0;if(px>0)detalle.proxima_rotacion_en_km=px;}
-  }
+  if(tipoTrabajo==="cubiertas")detalle={operacion:cubOp,eje:document.getElementById("cb-eje").value,posicion:document.getElementById("cb-pos").value,marca:document.getElementById("cb-marca").value.trim(),serie:document.getElementById("cb-serie").value.trim()};
   else if(tipoTrabajo==="service")detalle={filtros:[...filtrosSeleccionados],litros_aceite:document.getElementById("sv-litros").value,tipo_aceite:document.getElementById("sv-aceite").value.trim(),proximo_service_km:parseInt(document.getElementById("sv-proximo").value)||0};
   else if(tipoTrabajo==="aceite_caja")detalle={componente:aceiteComp,litros:document.getElementById("ac-litros").value,tipo_aceite:document.getElementById("ac-tipo").value.trim()};
   const repuestos=getRepuestos();
@@ -512,223 +381,59 @@ async function guardarTrabajo(){
   document.getElementById("success-det").textContent=unidad+" - "+tipoTrabajo+" - "+fecha;
   loadMesesSelector();
 }
-
 function nuevoTrabajo(){
   document.getElementById("form-trabajo").style.display="block";
   document.getElementById("success-trabajo").style.display="none";
-  ["t-unidad","t-km","t-desc","cb-marca","cb-serie","sv-litros","sv-aceite","sv-proximo","ac-litros","ac-tipo","rot-prox-km"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["t-unidad","t-km","t-desc","cb-marca","cb-serie","sv-litros","sv-aceite","sv-proximo","ac-litros","ac-tipo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   document.getElementById("t-fecha").value=hoy;
   document.getElementById("foto-preview").style.display="none";fotoBase64=null;
-  document.getElementById("rot-alerta-box").style.display="block"; // colocacion es default
   filtrosSeleccionados.clear();document.querySelectorAll("#filtros-grupo .radio-btn").forEach(b=>b.className="radio-btn");
   document.getElementById("repuestos-lista").innerHTML="<div class='repuesto-row' id='rep-row-0'><input type='text' class='codigo' placeholder='Codigo' id='rep-cod-0'><input type='text' placeholder='Descripcion' id='rep-desc-0'><input type='number' class='cant' placeholder='Cant.' id='rep-cant-0' inputmode='numeric'><button class='btn-icon btn-add' onclick='addRepuesto()'>+</button></div>";
   repCount=1;
-  cubOp="colocacion";
-  ["cb-coloc","cb-rot","cb-emp"].forEach(id=>document.getElementById(id).className="radio-btn");
-  document.getElementById("cb-coloc").className="radio-btn sel-green";
 }
-
-// ── MODAL EDICION ────────────────────────────────────────────────────────────
-function abrirEdicion(registro){
-  const t=typeof registro==="string"?JSON.parse(decodeURIComponent(registro)):registro;
-  const det=JSON.parse(t.detalle||"{}");
-  const reps=JSON.parse(t.repuestos||"[]");
-
-  document.getElementById("edit-id").value=t.id;
-  // Unidad
-  const uSel=document.getElementById("edit-unidad");
-  const tieneOpcion=[...uSel.options].some(o=>o.value===t.unidad);
-  if(tieneOpcion){uSel.value=t.unidad;document.getElementById("edit-otro-box").classList.add("hidden");}
-  else{uSel.value="__otro_edit__";document.getElementById("edit-otro-box").classList.remove("hidden");document.getElementById("edit-otro-txt").value=t.unidad||"";}
-  document.getElementById("edit-km").value=t.km||"";
-  document.getElementById("edit-fecha").value=t.fecha||"";
-  document.getElementById("edit-tipo").value=t.tipo||"cubiertas";
-  document.getElementById("edit-desc").value=t.descripcion||"";
-
-  editTipoChange(t.tipo||"cubiertas");
-
-  if(t.tipo==="cubiertas"){
-    editCubOp=det.operacion||"colocacion";
-    ["ecb-coloc","ecb-rot","ecb-emp"].forEach(id=>document.getElementById(id).className="radio-btn");
-    const opId={colocacion:"ecb-coloc",rotacion:"ecb-rot",emparche:"ecb-emp"}[editCubOp];
-    if(opId)document.getElementById(opId).className="radio-btn sel-green";
-    editUpdateEjes(t.unidad);
-    setTimeout(()=>{document.getElementById("edit-cb-eje").value=det.eje||"";editUpdatePosiciones();setTimeout(()=>{document.getElementById("edit-cb-pos").value=det.posicion||"";},50);},50);
-    document.getElementById("edit-cb-marca").value=det.marca||"";
-    document.getElementById("edit-cb-serie").value=det.serie||"";
-    document.getElementById("edit-rot-prox-km").value=det.proxima_rotacion_en_km||"";
-    const showRot=(editCubOp==="colocacion"||editCubOp==="rotacion");
-    document.getElementById("edit-rot-alerta-box").style.display=showRot?"block":"none";
-  }
-  if(t.tipo==="service"){
-    editFiltros=new Set(det.filtros||[]);
-    document.querySelectorAll("#edit-filtros-grupo .radio-btn").forEach(b=>{
-      const f=b.getAttribute("onclick")?.match(/'(\w+)'\)/)?.[1];
-      if(f&&editFiltros.has(f))b.className="radio-btn sel-green"; else b.className="radio-btn";
-    });
-    document.getElementById("edit-sv-litros").value=det.litros_aceite||"";
-    document.getElementById("edit-sv-aceite").value=det.tipo_aceite||"";
-    document.getElementById("edit-sv-proximo").value=det.proximo_service_km||"";
-  }
-  if(t.tipo==="aceite_caja"){
-    editAceiteComp=det.componente||"caja";
-    ["eac-caja","eac-dif","eac-ambos"].forEach(id=>document.getElementById(id).className="radio-btn");
-    const acId={caja:"eac-caja",diferencial:"eac-dif",ambos:"eac-ambos"}[editAceiteComp];
-    if(acId)document.getElementById(acId).className="radio-btn sel-orange";
-    document.getElementById("edit-ac-litros").value=det.litros||"";
-    document.getElementById("edit-ac-tipo").value=det.tipo_aceite||"";
-  }
-
-  // Repuestos
-  editRepCount=0;
-  const rl=document.getElementById("edit-repuestos-lista");rl.innerHTML="";
-  reps.forEach(r=>editAddRepuesto(r));
-  if(reps.length===0)editAddRepuesto();
-
-  document.getElementById("modal-edicion").classList.add("open");
-  document.body.style.overflow="hidden";
-}
-
-function cerrarModal(){
-  document.getElementById("modal-edicion").classList.remove("open");
-  document.body.style.overflow="";
-}
-
-function editUnidadChange(){
-  const v=document.getElementById("edit-unidad").value;
-  document.getElementById("edit-otro-box").classList.toggle("hidden",v!=="__otro_edit__");
-  editUpdateEjes(v==="__otro_edit__"?"":v);
-}
-function editUnidadFinal(){const v=document.getElementById("edit-unidad").value;if(v==="__otro_edit__")return document.getElementById("edit-otro-txt").value.trim()||null;return v||null;}
-
-function editUpdateEjes(u){
-  u=u||"";
-  const sel=document.getElementById("edit-cb-eje");
-  sel.innerHTML="<option value=''>- Seleccionar eje -</option>";
-  getEjesParaUnidad(u).forEach(e=>{const o=document.createElement("option");o.value=e;o.textContent=e;sel.appendChild(o);});
-  editUpdatePosiciones();
-}
-function editUpdatePosiciones(){
-  const eje=document.getElementById("edit-cb-eje").value;
-  const u=editUnidadFinal()||"";
-  const sel=document.getElementById("edit-cb-pos");
-  sel.innerHTML="<option value=''>- Seleccionar posicion -</option>";
-  getPosicionesParaUnidadEje(u,eje).forEach(p=>{const o=document.createElement("option");o.value=p;o.textContent=p;sel.appendChild(o);});
-}
-
-function editTipoChange(tipo){
-  tipo=tipo||document.getElementById("edit-tipo").value;
-  ["cubiertas","service","aceite_caja"].forEach(m=>document.getElementById("edit-mod-"+m).classList.add("hidden"));
-  if(["cubiertas","service","aceite_caja"].includes(tipo))document.getElementById("edit-mod-"+tipo).classList.remove("hidden");
-}
-function editSelCubOp(op,el){
-  editCubOp=op;
-  ["ecb-coloc","ecb-rot","ecb-emp"].forEach(id=>document.getElementById(id).className="radio-btn");
-  el.className="radio-btn sel-green";
-  const show=(op==="colocacion"||op==="rotacion");
-  document.getElementById("edit-rot-alerta-box").style.display=show?"block":"none";
-}
-function editSelAceite(comp,el){editAceiteComp=comp;["eac-caja","eac-dif","eac-ambos"].forEach(id=>document.getElementById(id).className="radio-btn");el.className="radio-btn sel-orange";}
-function editToggleFiltro(el,f){if(editFiltros.has(f)){editFiltros.delete(f);el.className="radio-btn";}else{editFiltros.add(f);el.className="radio-btn sel-green";}}
-
-function editAddRepuesto(rep){
-  const n=editRepCount++;const div=document.createElement("div");div.className="repuesto-row";div.id="erep-row-"+n;
-  div.innerHTML="<input type='text' class='codigo' placeholder='Codigo' id='erep-cod-"+n+"' value='"+(rep?.codigo||"")+"'><input type='text' placeholder='Descripcion' id='erep-desc-"+n+"' value='"+(rep?.descripcion||"")+"'><input type='number' class='cant' placeholder='Cant.' id='erep-cant-"+n+"' value='"+(rep?.cantidad||"")+"' inputmode='numeric'><button class='btn-icon btn-del' onclick='this.parentElement.remove()'>x</button>";
-  document.getElementById("edit-repuestos-lista").appendChild(div);
-}
-function getEditRepuestos(){
-  const reps=[];
-  document.querySelectorAll("#edit-repuestos-lista .repuesto-row").forEach(row=>{
-    const n=row.id.replace("erep-row-","");
-    const cod=document.getElementById("erep-cod-"+n)?.value.trim()||"";
-    const desc=document.getElementById("erep-desc-"+n)?.value.trim()||"";
-    const cant=parseFloat(document.getElementById("erep-cant-"+n)?.value)||0;
-    if(desc||cod)reps.push({codigo:cod,descripcion:desc,cantidad:cant});
-  });
-  return reps;
-}
-
-async function guardarEdicion(){
-  const id=document.getElementById("edit-id").value;
-  const unidad=editUnidadFinal();
-  const km=parseInt(document.getElementById("edit-km").value)||0;
-  const fecha=document.getElementById("edit-fecha").value;
-  const tipo=document.getElementById("edit-tipo").value;
-  const desc=document.getElementById("edit-desc").value.trim();
-  if(!unidad||!fecha){alert("Completa unidad y fecha");return;}
-  let detalle={};
-  if(tipo==="cubiertas"){
-    detalle={operacion:editCubOp,eje:document.getElementById("edit-cb-eje").value,posicion:document.getElementById("edit-cb-pos").value,marca:document.getElementById("edit-cb-marca").value.trim(),serie:document.getElementById("edit-cb-serie").value.trim()};
-    if(editCubOp==="colocacion"||editCubOp==="rotacion"){const px=parseInt(document.getElementById("edit-rot-prox-km").value)||0;if(px>0)detalle.proxima_rotacion_en_km=px;}
-  }
-  else if(tipo==="service")detalle={filtros:[...editFiltros],litros_aceite:document.getElementById("edit-sv-litros").value,tipo_aceite:document.getElementById("edit-sv-aceite").value.trim(),proximo_service_km:parseInt(document.getElementById("edit-sv-proximo").value)||0};
-  else if(tipo==="aceite_caja")detalle={componente:editAceiteComp,litros:document.getElementById("edit-ac-litros").value,tipo_aceite:document.getElementById("edit-ac-tipo").value.trim()};
-  const repuestos=getEditRepuestos();
-  showLoading(true);
-  const {error}=await sb.from("trabajos_taller").update({unidad,km,fecha,tipo,descripcion:desc,detalle:JSON.stringify(detalle),repuestos:JSON.stringify(repuestos)}).eq("id",id);
-  showLoading(false);
-  if(error){alert("Error: "+error.message);return;}
-  cerrarModal();
-  loadHistorial();
-  alert("Cambios guardados ✓");
-}
-
-async function eliminarTrabajo(){
-  if(!confirm("¿Eliminar este registro? Esta accion no se puede deshacer."))return;
-  const id=document.getElementById("edit-id").value;
-  showLoading(true);
-  const {error}=await sb.from("trabajos_taller").delete().eq("id",id);
-  showLoading(false);
-  if(error){alert("Error: "+error.message);return;}
-  cerrarModal();
-  loadHistorial();
-}
-
-// ── ALERTAS ──────────────────────────────────────────────────────────────────
 async function loadAlertas(){
   showLoading(true);
+  // Traer trabajos del taller
   const {data}=await sb.from("trabajos_taller").select("*").order("fecha",{ascending:false});
+  // Traer KM actuales reales desde app combustible
+  const {data:kmData}=await sb.from("cargas").select("unidad,km").order("km",{ascending:false});
   showLoading(false);
   if(!data)return;
-  const services={};
-  data.filter(t=>t.tipo==="service").forEach(t=>{if(!services[t.unidad]||t.fecha>services[t.unidad].fecha)services[t.unidad]=t;});
+
+  // Mapa de KM actuales reales por unidad
+  const kmActualMap={};
+  if(kmData){kmData.forEach(c=>{if(!kmActualMap[c.unidad]||c.km>kmActualMap[c.unidad])kmActualMap[c.unidad]=c.km;});}
+
+  const services={};data.filter(t=>t.tipo==="service").forEach(t=>{if(!services[t.unidad]||t.fecha>services[t.unidad].fecha)services[t.unidad]=t;});
   const aDiv=document.getElementById("alertas-lista");let html="";
   Object.entries(services).forEach(([u,t])=>{
     const det=JSON.parse(t.detalle||"{}");const px=det.proximo_service_km||0;if(!px)return;
-    const km=t.km||0;const diff=px-km;
-    let cls="ok",icon="✅",msg="Faltan "+diff.toLocaleString("es-AR")+" km";
-    if(diff<=0){cls="danger";icon="🔴";msg="VENCIDO";}else if(diff<5000){cls="warn";icon="⚠️";}
-    html+="<div class='alert-card "+cls+"'><strong>"+icon+" "+u+"</strong> — Prox. service: "+px.toLocaleString("es-AR")+" km<br><span style='font-size:12px;color:#555'>Ultimo: "+t.fecha+" | "+km.toLocaleString("es-AR")+" km | "+msg+"</span></div>";
+    // Usar KM real de combustible si esta disponible, sino el del trabajo
+    const kmReal=kmActualMap[u]||t.km||0;
+    const diff=px-kmReal;
+    let cls="ok",icon="Verde",msg="Faltan "+diff.toLocaleString("es-AR")+" km";
+    if(diff<=0){cls="danger";icon="ROJO";msg="VENCIDO";}else if(diff<5000){cls="warn";icon="Atencion";}
+    const kmFuente=kmActualMap[u]?"KM actual (combustible)":"KM al registrar";
+    html+="<div class='alert-card "+cls+"'><strong>"+icon+" "+u+"</strong> - Prox. service: "+px.toLocaleString("es-AR")+" km<br>"+
+      "<span style='font-size:12px;color:#555'>Ultimo service: "+t.fecha+" | "+kmFuente+": "+kmReal.toLocaleString("es-AR")+" km | "+msg+"</span></div>";
   });
   aDiv.innerHTML=html||"<div class='empty-msg'>No hay services registrados aun</div>";
 
-  // Rotaciones: tomar ultima colocacion O rotacion por unidad+eje, priorizando la mas reciente
-  const rotMap={};
-  data.filter(t=>t.tipo==="cubiertas").forEach(t=>{
-    const det=JSON.parse(t.detalle||"{}");
-    if(det.operacion!=="rotacion"&&det.operacion!=="colocacion")return;
-    if(!det.proxima_rotacion_en_km)return;
-    const key=t.unidad+"||"+(det.eje||"");
-    if(!rotMap[key]||t.fecha>rotMap[key].fecha)rotMap[key]={...t,_det:det};
-  });
-  const kmActual={};
-  data.forEach(t=>{if(t.km&&(!kmActual[t.unidad]||t.fecha>kmActual[t.unidad].fecha))kmActual[t.unidad]={km:t.km};});
+  const rotaciones={};data.filter(t=>t.tipo==="cubiertas").forEach(t=>{const det=JSON.parse(t.detalle||"{}");if(det.operacion==="rotacion"&&(!rotaciones[t.unidad]||t.fecha>rotaciones[t.unidad].fecha))rotaciones[t.unidad]=t;});
   const rDiv=document.getElementById("rotaciones-lista");let rHtml="";
-  Object.entries(rotMap).forEach(([key,t])=>{
-    const det=t._det;const kmRot=t.km||0;const proxEnKm=det.proxima_rotacion_en_km;
-    const kmAct=kmActual[t.unidad]?.km||kmRot;
-    const kmProx=kmRot+proxEnKm;const diff=kmProx-kmAct;
-    const margen=proxEnKm*0.1;
-    let cls="ok",icon="✅",msg="Faltan "+diff.toLocaleString("es-AR")+" km";
-    if(diff<=0){cls="danger";icon="🔴";msg="VENCIDA — rotar lo antes posible";}
-    else if(diff<margen){cls="warn";icon="⚠️";msg="Faltan "+diff.toLocaleString("es-AR")+" km";}
-    const opLabel=det.operacion==="colocacion"?"(desde colocacion)":"";
-    rHtml+="<div class='alert-card "+cls+"'><strong>"+icon+" "+t.unidad+"</strong> <span style='font-size:11px;color:#555'>"+( det.eje||"")+" "+opLabel+"</span><br><span style='font-size:12px;color:#333'>Prox. rotacion: "+kmProx.toLocaleString("es-AR")+" km | "+msg+"</span><br><span style='font-size:11px;color:#888'>Ultimo trabajo: "+t.fecha+" ("+kmRot.toLocaleString("es-AR")+" km) | Intervalo: "+proxEnKm.toLocaleString("es-AR")+" km</span></div>";
+  Object.entries(rotaciones).forEach(([u,t])=>{
+    const kmReal=kmActualMap[u]||t.km||0;
+    const diff=kmReal-(t.km||0);
+    const prox=(t.km||0)+30000;
+    const faltanRot=prox-kmReal;
+    let cls2="ok",msgRot="Proxima sugerida: "+prox.toLocaleString("es-AR")+" km";
+    if(faltanRot<=0){cls2="danger";msgRot="ROTACION VENCIDA";}
+    else if(faltanRot<3000){cls2="warn";msgRot="Faltan solo "+faltanRot.toLocaleString("es-AR")+" km";}
+    rHtml+="<div class='alert-card "+cls2+"'><strong>"+u+"</strong> - Ultima rotacion: "+t.fecha+" ("+( t.km||0).toLocaleString("es-AR")+" km)<br>"+
+      "<span style='font-size:12px;color:#555'>KM actual: "+kmReal.toLocaleString("es-AR")+" km | "+msgRot+"</span></div>";
   });
-  rDiv.innerHTML=rHtml||"<div class='empty-msg'>No hay rotaciones/colocaciones con alerta configurada</div>";
+  rDiv.innerHTML=rHtml||"<div class='empty-msg'>No hay rotaciones registradas aun</div>";
 }
-
-// ── HISTORIAL ────────────────────────────────────────────────────────────────
 async function loadHistorial(){
   showLoading(true);
   let query=sb.from("trabajos_taller").select("*").order("fecha",{ascending:false}).limit(150);
@@ -745,20 +450,14 @@ async function loadHistorial(){
   div.innerHTML=data.map(t=>{
     const det=JSON.parse(t.detalle||"{}");const reps=JSON.parse(t.repuestos||"[]");
     let extra="";
-    if(t.tipo==="cubiertas"&&det.eje){
-      extra="<span style='font-size:11px;color:#1F4E79'>"+det.operacion+" | "+det.eje+" | "+(det.posicion||"")+(det.marca?" | "+det.marca:"")+"</span>";
-      if(det.proxima_rotacion_en_km&&t.km)extra+=" <span style='font-size:11px;color:#375623;font-weight:600'>| Prox rot: "+(t.km+det.proxima_rotacion_en_km).toLocaleString("es-AR")+" km</span>";
-      extra+="<br>";
-    }
+    if(t.tipo==="cubiertas"&&det.eje)extra="<span style='font-size:11px;color:#1F4E79'>"+det.operacion+" | "+det.eje+" | "+(det.posicion||"")+(det.marca?" | "+det.marca:"")+"</span><br>";
     else if(t.tipo==="service"&&det.filtros?.length)extra="<span style='font-size:11px;color:#1F4E79'>Filtros: "+det.filtros.join(", ")+(det.litros_aceite?" | "+det.litros_aceite+" lts":"")+"</span><br>";
     else if(t.tipo==="aceite_caja")extra="<span style='font-size:11px;color:#C55A11'>"+(det.componente||"")+(det.litros?" | "+det.litros+" lts":"")+"</span><br>";
     const repStr=reps.length?"<span style='font-size:11px;color:#666'>"+reps.map(r=>r.descripcion+(r.cantidad?" x"+r.cantidad:"")).join(" | ")+"</span><br>":"";
     const fotoStr=t.foto?"<img src='"+t.foto+"' style='width:100%;max-height:150px;object-fit:cover;border-radius:6px;margin-top:6px'>":"";
-    const encoded=encodeURIComponent(JSON.stringify(t));
-    return "<div class='hist-item'><div class='hist-header'><span class='hist-unidad'>"+t.unidad+"</span><div style='display:flex;align-items:center;gap:6px'><span class='hist-fecha'>"+t.fecha+(t.km?" | "+parseInt(t.km).toLocaleString("es-AR")+" km":"")+"</span><button onclick='abrirEdicion(\""+encoded.replace(/"/g,"&quot;")+"\")'  style='background:#EBF2FA;border:none;border-radius:6px;padding:3px 8px;font-size:11px;color:#1F4E79;cursor:pointer;font-weight:600'>✏️ Editar</button></div></div><span class='badge "+(tb[t.tipo]||"badge-gray")+"'>"+(tl[t.tipo]||t.tipo)+"</span><div style='margin-top:6px'>"+extra+repStr+(t.descripcion?"<span style='font-size:12px;color:#333'>"+t.descripcion+"</span>":"")+"</div>"+fotoStr+"<div style='font-size:10px;color:#bbb;margin-top:4px'>"+(t.usuario||"")+"</div></div>";
+    return "<div class='hist-item'><div class='hist-header'><span class='hist-unidad'>"+t.unidad+"</span><span class='hist-fecha'>"+t.fecha+(t.km?" | "+parseInt(t.km).toLocaleString("es-AR")+" km":"")+"</span></div><span class='badge "+(tb[t.tipo]||"badge-gray")+"'>"+(tl[t.tipo]||t.tipo)+"</span><div style='margin-top:6px'>"+extra+repStr+(t.descripcion?"<span style='font-size:12px;color:#333'>"+t.descripcion+"</span>":"")+"</div>"+fotoStr+"<div style='font-size:10px;color:#bbb;margin-top:4px'>"+( t.usuario||"")+"</div></div>";
   }).join("");
 }
-
 async function loadMesesSelector(){
   const {data}=await sb.from("trabajos_taller").select("fecha").order("fecha",{ascending:false});if(!data)return;
   const meses=[...new Set(data.map(d=>d.fecha?.substring(0,7)).filter(Boolean))];
@@ -768,7 +467,6 @@ async function loadMesesSelector(){
     sel.innerHTML=base+meses.map(m=>{const[y,mo]=m.split("-");const n=new Date(y,parseInt(mo)-1,1).toLocaleDateString("es-AR",{month:"long",year:"numeric"});return "<option value='"+m+"'>"+n+"</option>";}).join("");
   });
 }
-
 async function loadStock(){
   const buscar=document.getElementById("st-buscar").value.trim();
   let query=sb.from("stock_taller").select("*").order("descripcion",{ascending:true});
@@ -777,7 +475,6 @@ async function loadStock(){
   if(!data||!data.length){div.innerHTML="<div class='empty-msg'>Sin repuestos en stock</div>";return;}
   div.innerHTML=data.map(s=>"<div class='row-item'><div><span style='font-weight:600'>"+s.descripcion+"</span>"+(s.codigo?"<span class='badge badge-gray' style='margin-left:4px'>"+s.codigo+"</span>":"")+"</div><span style='font-weight:700;color:"+(s.cantidad<=2?"#C00000":"#375623")+"'>"+s.cantidad+" "+(s.unidad||"u.")+"</span></div>").join("");
 }
-
 async function agregarStock(){
   const cod=document.getElementById("st-cod").value.trim();const desc=document.getElementById("st-desc").value.trim();const cant=parseFloat(document.getElementById("st-cant").value)||0;
   if(!desc||!cant){alert("Completa descripcion y cantidad");return;}
@@ -787,7 +484,6 @@ async function agregarStock(){
   else await sb.from("stock_taller").insert([{codigo:cod,descripcion:desc,cantidad:cant,unidad:stockUnid}]);
   showLoading(false);["st-cod","st-desc","st-cant"].forEach(id=>document.getElementById(id).value="");loadStock();alert("Stock actualizado!");
 }
-
 async function exportarExcel(){
   const unidad=document.getElementById("exp-unidad").value;const mes=document.getElementById("exp-mes").value;
   showLoading(true);let query=sb.from("trabajos_taller").select("*").order("fecha",{ascending:true});
@@ -798,13 +494,13 @@ async function exportarExcel(){
     const det=JSON.parse(t.detalle||"{}");const reps=JSON.parse(t.repuestos||"[]");
     const repStr=reps.map(r=>r.descripcion+(r.cantidad?" x"+r.cantidad:"")).join(" | ");
     let ds="";
-    if(t.tipo==="cubiertas"){ds=[det.operacion,det.eje,det.posicion,det.marca,det.serie].filter(Boolean).join(" | ");if(det.proxima_rotacion_en_km&&t.km)ds+=" | Prox rot: "+(t.km+det.proxima_rotacion_en_km).toLocaleString("es-AR")+" km";}
+    if(t.tipo==="cubiertas")ds=[det.operacion,det.eje,det.posicion,det.marca,det.serie].filter(Boolean).join(" | ");
     else if(t.tipo==="service")ds="Filtros: "+(det.filtros||[]).join(",")+" | "+(det.litros_aceite||"")+"lts "+(det.tipo_aceite||"")+" | Prox: "+(det.proximo_service_km||"")+"km";
     else if(t.tipo==="aceite_caja")ds=[det.componente,det.litros?det.litros+"lts":"",det.tipo_aceite].filter(Boolean).join(" | ");
     return [t.fecha,t.unidad,t.km||"",t.tipo,ds,t.descripcion||"",repStr,t.usuario||""];
   });
   const wb2=XLSX.utils.book_new();const ws2=XLSX.utils.aoa_to_sheet([["FECHA","UNIDAD","KM","TIPO","DETALLE","DESCRIPCION","REPUESTOS","USUARIO"],...rows]);
-  ws2["!cols"]=[{wch:12},{wch:12},{wch:10},{wch:14},{wch:50},{wch:30},{wch:30},{wch:16}];
+  ws2["!cols"]=[{wch:12},{wch:12},{wch:10},{wch:14},{wch:40},{wch:30},{wch:30},{wch:16}];
   XLSX.utils.book_append_sheet(wb2,ws2,"Trabajos Taller");XLSX.writeFile(wb2,"taller_"+(unidad||"todos")+"_"+(mes||"completo")+".xlsx");
 }
 </script>
