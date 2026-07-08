@@ -239,6 +239,34 @@
     </div>
   </div>
 </div>
+<!-- MODAL EDITAR TRABAJO -->
+<div id="modal-editar-trabajo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px">
+  <div style="background:white;border-radius:16px;padding:20px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto">
+    <div style="font-weight:700;font-size:16px;margin-bottom:14px;color:#1F4E79">Editar trabajo</div>
+    <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Unidad</label>
+    <input type="text" id="mod-edit-unidad" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px">
+    <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Fecha</label>
+    <input type="date" id="mod-edit-fecha" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px">
+    <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">KM</label>
+    <input type="number" id="mod-edit-km" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px" inputmode="numeric">
+    <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Tipo de trabajo</label>
+    <select id="mod-edit-tipo" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px">
+      <option value="cubiertas">Cubiertas</option>
+      <option value="service">Service</option>
+      <option value="aceite_caja">Aceite caja/dif.</option>
+      <option value="electrico">Electrico</option>
+      <option value="reparacion">Reparacion</option>
+      <option value="otro">Otro</option>
+    </select>
+    <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Descripcion / observaciones</label>
+    <textarea id="mod-edit-desc" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;resize:none;height:70px;margin-bottom:8px;font-family:inherit"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button onclick="cerrarModalEditar()" style="flex:1;padding:10px;background:white;color:#1F4E79;border:1.5px solid #1F4E79;border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit">Cancelar</button>
+      <button onclick="guardarEdicionTrabajo()" style="flex:1;padding:10px;background:#1F4E79;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="loading-overlay" id="loading" style="display:none"><div class="spinner"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -502,6 +530,49 @@ async function exportarExcel(){
   const wb2=XLSX.utils.book_new();const ws2=XLSX.utils.aoa_to_sheet([["FECHA","UNIDAD","KM","TIPO","DETALLE","DESCRIPCION","REPUESTOS","USUARIO"],...rows]);
   ws2["!cols"]=[{wch:12},{wch:12},{wch:10},{wch:14},{wch:40},{wch:30},{wch:30},{wch:16}];
   XLSX.utils.book_append_sheet(wb2,ws2,"Trabajos Taller");XLSX.writeFile(wb2,"taller_"+(unidad||"todos")+"_"+(mes||"completo")+".xlsx");
+}
+
+let trabajoEditando=null;
+
+function abrirEditarTrabajo(t){
+  trabajoEditando=t;
+  document.getElementById("mod-edit-unidad").value=t.unidad||"";
+  document.getElementById("mod-edit-fecha").value=t.fecha||"";
+  document.getElementById("mod-edit-km").value=t.km||"";
+  document.getElementById("mod-edit-tipo").value=t.tipo||"otro";
+  document.getElementById("mod-edit-desc").value=t.descripcion||"";
+  document.getElementById("modal-editar-trabajo").style.display="flex";
+}
+
+function cerrarModalEditar(){
+  document.getElementById("modal-editar-trabajo").style.display="none";
+  trabajoEditando=null;
+}
+
+async function guardarEdicionTrabajo(){
+  if(!trabajoEditando)return;
+  showLoading(true);
+  const {error}=await sb.from("trabajos_taller").update({
+    unidad:document.getElementById("mod-edit-unidad").value.trim(),
+    fecha:document.getElementById("mod-edit-fecha").value,
+    km:parseInt(document.getElementById("mod-edit-km").value)||0,
+    tipo:document.getElementById("mod-edit-tipo").value,
+    descripcion:document.getElementById("mod-edit-desc").value.trim(),
+  }).eq("id",trabajoEditando.id);
+  showLoading(false);
+  if(error){alert("Error: "+error.message);return;}
+  cerrarModalEditar();
+  loadHistorial();
+  alert("Trabajo actualizado!");
+}
+
+async function eliminarTrabajo(id){
+  if(!confirm("Seguro que queres eliminar este trabajo? Esta accion no se puede deshacer."))return;
+  showLoading(true);
+  const {error}=await sb.from("trabajos_taller").delete().eq("id",id);
+  showLoading(false);
+  if(error){alert("Error: "+error.message);return;}
+  loadHistorial();
 }
 </script>
 </body>
