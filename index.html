@@ -483,7 +483,12 @@ async function loadHistorial(){
     else if(t.tipo==="aceite_caja")extra="<span style='font-size:11px;color:#C55A11'>"+(det.componente||"")+(det.litros?" | "+det.litros+" lts":"")+"</span><br>";
     const repStr=reps.length?"<span style='font-size:11px;color:#666'>"+reps.map(r=>r.descripcion+(r.cantidad?" x"+r.cantidad:"")).join(" | ")+"</span><br>":"";
     const fotoStr=t.foto?"<img src='"+t.foto+"' style='width:100%;max-height:150px;object-fit:cover;border-radius:6px;margin-top:6px'>":"";
-    return "<div class='hist-item'><div class='hist-header'><span class='hist-unidad'>"+t.unidad+"</span><span class='hist-fecha'>"+t.fecha+(t.km?" | "+parseInt(t.km).toLocaleString("es-AR")+" km":"")+"</span></div><span class='badge "+(tb[t.tipo]||"badge-gray")+"'>"+(tl[t.tipo]||t.tipo)+"</span><div style='margin-top:6px'>"+extra+repStr+(t.descripcion?"<span style='font-size:12px;color:#333'>"+t.descripcion+"</span>":"")+"</div>"+fotoStr+"<div style='font-size:10px;color:#bbb;margin-top:4px'>"+( t.usuario||"")+"</div></div>";
+    return "<div class='hist-item'><div class='hist-header'><span class='hist-unidad'>"+t.unidad+"</span><span class='hist-fecha'>"+t.fecha+(t.km?" | "+parseInt(t.km).toLocaleString("es-AR")+" km":"")+"</span></div><span class='badge "+(tb[t.tipo]||"badge-gray")+"'>"+(tl[t.tipo]||t.tipo)+"</span><div style='margin-top:6px'>"+extra+repStr+(t.descripcion?"<span style='font-size:12px;color:#333'>"+t.descripcion+"</span>":"")+"</div>"+fotoStr+"<div style='font-size:10px;color:#bbb;margin-top:4px'>"+(t.usuario||"")+"</div>"+
+      "<div style='display:flex;gap:6px;margin-top:8px'>"+
+        "<button onclick='abrirEditarTrabajo("+JSON.stringify(t).replace(/"/g,"&quot;")+")'  style='padding:4px 12px;border:1px solid #2E75B6;border-radius:6px;background:#EBF2FA;color:#1F4E79;font-size:11px;cursor:pointer;font-family:inherit'>Editar</button>"+
+        "<button onclick='eliminarTrabajo("+t.id+")' style='padding:4px 12px;border:1px solid #C00000;border-radius:6px;background:#FCEBEB;color:#C00000;font-size:11px;cursor:pointer;font-family:inherit'>Borrar</button>"+
+      "</div>"+
+    "</div>";
   }).join("");
 }
 async function loadMesesSelector(){
