@@ -124,6 +124,7 @@
           <label>Posicion</label><select id="cb-pos"><option value="">- Seleccionar posicion -</option></select>
           <label>Marca / modelo</label><input type="text" id="cb-marca" placeholder="Ej: Double Coin, Fate DR-400...">
           <label>Nro de serie (opcional)</label><input type="text" id="cb-serie" placeholder="Ej: J42142805 AÑO 42/24">
+          <label>Proximo control / rotacion (km)</label><input type="number" id="cb-proximo" placeholder="Ej: 280000" inputmode="numeric">
         </div>
         <div id="mod-service" class="modulo-box hidden">
           <div class="modulo-title">Detalle service motor</div>
@@ -389,7 +390,7 @@ async function guardarTrabajo(){
   if(!unidad){alert("Selecciona una unidad");return;}
   if(!fecha){alert("Ingresa la fecha");return;}
   let detalle={};
-  if(tipoTrabajo==="cubiertas")detalle={operacion:cubOp,eje:document.getElementById("cb-eje").value,posicion:document.getElementById("cb-pos").value,marca:document.getElementById("cb-marca").value.trim(),serie:document.getElementById("cb-serie").value.trim()};
+  if(tipoTrabajo==="cubiertas")detalle={operacion:cubOp,eje:document.getElementById("cb-eje").value,posicion:document.getElementById("cb-pos").value,marca:document.getElementById("cb-marca").value.trim(),serie:document.getElementById("cb-serie").value.trim(),proximo_control_km:parseInt(document.getElementById("cb-proximo").value)||0};
   else if(tipoTrabajo==="service")detalle={filtros:[...filtrosSeleccionados],litros_aceite:document.getElementById("sv-litros").value,tipo_aceite:document.getElementById("sv-aceite").value.trim(),proximo_service_km:parseInt(document.getElementById("sv-proximo").value)||0};
   else if(tipoTrabajo==="aceite_caja")detalle={componente:aceiteComp,litros:document.getElementById("ac-litros").value,tipo_aceite:document.getElementById("ac-tipo").value.trim()};
   const repuestos=getRepuestos();
@@ -412,7 +413,7 @@ async function guardarTrabajo(){
 function nuevoTrabajo(){
   document.getElementById("form-trabajo").style.display="block";
   document.getElementById("success-trabajo").style.display="none";
-  ["t-unidad","t-km","t-desc","cb-marca","cb-serie","sv-litros","sv-aceite","sv-proximo","ac-litros","ac-tipo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  ["t-unidad","t-km","t-desc","cb-marca","cb-serie","cb-proximo","sv-litros","sv-aceite","sv-proximo","ac-litros","ac-tipo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
   document.getElementById("t-fecha").value=hoy;
   document.getElementById("foto-preview").style.display="none";fotoBase64=null;
   filtrosSeleccionados.clear();document.querySelectorAll("#filtros-grupo .radio-btn").forEach(b=>b.className="radio-btn");
@@ -447,20 +448,24 @@ async function loadAlertas(){
   });
   aDiv.innerHTML=html||"<div class='empty-msg'>No hay services registrados aun</div>";
 
-  const rotaciones={};data.filter(t=>t.tipo==="cubiertas").forEach(t=>{const det=JSON.parse(t.detalle||"{}");if(det.operacion==="rotacion"&&(!rotaciones[t.unidad]||t.fecha>rotaciones[t.unidad].fecha))rotaciones[t.unidad]=t;});
-  const rDiv=document.getElementById("rotaciones-lista");let rHtml="";
-  Object.entries(rotaciones).forEach(([u,t])=>{
-    const kmReal=kmActualMap[u]||t.km||0;
-    const diff=kmReal-(t.km||0);
-    const prox=(t.km||0)+30000;
-    const faltanRot=prox-kmReal;
-    let cls2="ok",msgRot="Proxima sugerida: "+prox.toLocaleString("es-AR")+" km";
-    if(faltanRot<=0){cls2="danger";msgRot="ROTACION VENCIDA";}
-    else if(faltanRot<3000){cls2="warn";msgRot="Faltan solo "+faltanRot.toLocaleString("es-AR")+" km";}
-    rHtml+="<div class='alert-card "+cls2+"'><strong>"+u+"</strong> - Ultima rotacion: "+t.fecha+" ("+( t.km||0).toLocaleString("es-AR")+" km)<br>"+
-      "<span style='font-size:12px;color:#555'>KM actual: "+kmReal.toLocaleString("es-AR")+" km | "+msgRot+"</span></div>";
+  // Alertas cubiertas - toma el ultimo trabajo de cubiertas por unidad
+  const cubAlerts={};
+  data.filter(t=>t.tipo==="cubiertas").forEach(t=>{
+    if(!cubAlerts[t.unidad]||t.fecha>cubAlerts[t.unidad].fecha) cubAlerts[t.unidad]=t;
   });
-  rDiv.innerHTML=rHtml||"<div class='empty-msg'>No hay rotaciones registradas aun</div>";
+  const rDiv=document.getElementById("rotaciones-lista");let rHtml="";
+  Object.entries(cubAlerts).forEach(([u,t])=>{
+    const det=JSON.parse(t.detalle||"{}");
+    const kmReal=kmActualMap[u]||t.km||0;
+    const prox=det.proximo_control_km||((t.km||0)+30000);
+    const faltan=prox-kmReal;
+    let cls2="ok",msg="Faltan "+faltan.toLocaleString("es-AR")+" km para proximo control";
+    if(faltan<=0){cls2="danger";msg="CONTROL VENCIDO";}
+    else if(faltan<3000){cls2="warn";msg="Faltan solo "+faltan.toLocaleString("es-AR")+" km";}
+    rHtml+="<div class='alert-card "+cls2+"'><strong>"+u+"</strong> - "+(det.operacion||"Cubierta")+" | "+t.fecha+" ("+(t.km||0).toLocaleString("es-AR")+" km)<br>"+
+      "<span style='font-size:12px;color:#555'>KM actual: "+kmReal.toLocaleString("es-AR")+" km | Proximo: "+prox.toLocaleString("es-AR")+" km | "+msg+"</span></div>";
+  });
+  rDiv.innerHTML=rHtml||"<div class='empty-msg'>No hay trabajos de cubiertas registrados</div>";
 }
 async function loadHistorial(){
   showLoading(true);
