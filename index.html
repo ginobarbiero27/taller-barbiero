@@ -483,7 +483,7 @@ async function loadHistorial(){
   div.innerHTML=data.map(t=>{
     const det=JSON.parse(t.detalle||"{}");const reps=JSON.parse(t.repuestos||"[]");
     let extra="";
-    if(t.tipo==="cubiertas"&&det.eje)extra="<span style='font-size:11px;color:#1F4E79'>"+det.operacion+" | "+det.eje+" | "+(det.posicion||"")+(det.marca?" | "+det.marca:"")+"</span><br>";
+    if(t.tipo==="cubiertas"&&det.eje)extra="<span style='font-size:11px;color:#1F4E79'>"+det.operacion+" | "+det.eje+" | "+(det.posicion||"")+(det.marca?" | "+det.marca:"")+"</span>"+(det.serie?"<br><span style='font-size:11px;color:#888'>Serie: "+det.serie+"</span>":"")+"<br>";
     else if(t.tipo==="service"&&det.filtros?.length)extra="<span style='font-size:11px;color:#1F4E79'>Filtros: "+det.filtros.join(", ")+(det.litros_aceite?" | "+det.litros_aceite+" lts":"")+"</span><br>";
     else if(t.tipo==="aceite_caja")extra="<span style='font-size:11px;color:#C55A11'>"+(det.componente||"")+(det.litros?" | "+det.litros+" lts":"")+"</span><br>";
     const repStr=reps.length?"<span style='font-size:11px;color:#666'>"+reps.map(r=>r.descripcion+(r.cantidad?" x"+r.cantidad:"")).join(" | ")+"</span><br>":"";
