@@ -254,7 +254,7 @@ textarea{resize:none;height:70px}
 <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">KM</label>
 <input type="number" id="mod-edit-km" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px" inputmode="numeric">
 <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Tipo de trabajo</label>
-<select id="mod-edit-tipo" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px">
+<select id="mod-edit-tipo" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px" onchange="toggleModEditAceiteBox()">
 <option value="cubiertas">Cubiertas</option>
 <option value="service">Service</option>
 <option value="aceite_caja">Aceite caja/dif.</option>
@@ -262,6 +262,12 @@ textarea{resize:none;height:70px}
 <option value="reparacion">Reparacion</option>
 <option value="otro">Otro</option>
 </select>
+<div id="mod-edit-aceite-box" class="hidden">
+<label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Proximo cambio - Km</label>
+<input type="number" id="mod-edit-ac-km" inputmode="numeric" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px">
+<label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Proximo cambio - Fecha</label>
+<input type="date" id="mod-edit-ac-fecha" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;margin-bottom:8px">
+</div>
 <label style="font-size:13px;color:#555;display:block;margin-bottom:4px;font-weight:500">Descripcion / observaciones</label>
 <textarea id="mod-edit-desc" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;resize:none;height:70px;margin-bottom:8px;font-family:inherit"></textarea>
 <label style="font-size:13px;color:#555;display:block;margin-bottom:6px;font-weight:500">Repuestos utilizados</label>
@@ -573,6 +579,9 @@ ws2["!cols"]=[{wch:12},{wch:12},{wch:10},{wch:14},{wch:40},{wch:30},{wch:30},{wc
 XLSX.utils.book_append_sheet(wb2,ws2,"Trabajos Taller");XLSX.writeFile(wb2,"taller_"+(unidad||"todos")+"_"+(mes||"completo")+".xlsx");
 }
 let trabajoEditando=null;
+function toggleModEditAceiteBox(){
+document.getElementById("mod-edit-aceite-box").classList.toggle("hidden",document.getElementById("mod-edit-tipo").value!=="aceite_caja");
+}
 function abrirEditarTrabajo(t){
 trabajoEditando=t;
 document.getElementById("mod-edit-unidad").value=t.unidad||"";
@@ -580,6 +589,10 @@ document.getElementById("mod-edit-fecha").value=t.fecha||"";
 document.getElementById("mod-edit-km").value=t.km||"";
 document.getElementById("mod-edit-tipo").value=t.tipo||"otro";
 document.getElementById("mod-edit-desc").value=t.descripcion||"";
+const detEdit=JSON.parse(t.detalle||"{}");
+document.getElementById("mod-edit-ac-km").value=detEdit.proximo_cambio_km||"";
+document.getElementById("mod-edit-ac-fecha").value=detEdit.proximo_cambio_fecha||"";
+toggleModEditAceiteBox();
 // Cargar repuestos existentes
 const reps=JSON.parse(t.repuestos||"[]");
 const lista=document.getElementById("mod-edit-reps-lista");
@@ -623,13 +636,20 @@ async function guardarEdicionTrabajo(){
 if(!trabajoEditando)return;
 showLoading(true);
 const repuestos=getRepuestosModal();
+const tipoNuevo=document.getElementById("mod-edit-tipo").value;
+const detNuevo=JSON.parse(trabajoEditando.detalle||"{}");
+if(tipoNuevo==="aceite_caja"){
+detNuevo.proximo_cambio_km=parseInt(document.getElementById("mod-edit-ac-km").value)||0;
+detNuevo.proximo_cambio_fecha=document.getElementById("mod-edit-ac-fecha").value||null;
+}
 const {error}=await sb.from("trabajos_taller").update({
 unidad:document.getElementById("mod-edit-unidad").value.trim(),
 fecha:document.getElementById("mod-edit-fecha").value,
 km:parseInt(document.getElementById("mod-edit-km").value)||0,
-tipo:document.getElementById("mod-edit-tipo").value,
+tipo:tipoNuevo,
 descripcion:document.getElementById("mod-edit-desc").value.trim(),
 repuestos:JSON.stringify(repuestos),
+detalle:JSON.stringify(detNuevo),
 }).eq("id",trabajoEditando.id);
 showLoading(false);
 if(error){alert("Error: "+error.message);return;}
